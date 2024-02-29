@@ -1,9 +1,13 @@
-import { SignInButton, SignOutButton, auth } from '@clerk/nextjs'
+'use client'
+
+import { SignInButton, SignOutButton, useSession } from '@clerk/nextjs'
 
 export default function Home() {
-	const { userId } = auth()
+	const { isSignedIn } = useSession()
 
 	return (
-		<main className=''>{userId ? <SignOutButton /> : <SignInButton />}</main>
+		<main className=''>
+			{isSignedIn ? <SignOutButton /> : <SignInButton />}
+		</main>
 	)
 }
