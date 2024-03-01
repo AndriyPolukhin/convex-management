@@ -4,6 +4,6 @@ import { v } from 'convex/values'
 export default defineSchema({
 	thumbnails: defineTable({
 		title: v.string(),
-		userId: v.optional(v.string()),
+		userId: v.string(),
 	}),
 })
