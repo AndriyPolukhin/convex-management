@@ -2,12 +2,13 @@
 
 import { SignInButton, SignOutButton, useSession } from '@clerk/nextjs'
 import { api } from '../../convex/_generated/api'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 
 export default function Home() {
 	const { isSignedIn } = useSession()
 
 	const createThumbnail = useMutation(api.thumbnails.createThumbnail)
+	const thumbnails = useQuery(api.thumbnails.getThumbnailsForUser)
 
 	return (
 		<main className=''>
@@ -26,9 +27,19 @@ export default function Home() {
 					}}
 				>
 					<label>Title</label>
-					<input name='title' className='text-black' /> <button>Create</button>
+					<input name='title' className='text-black' />
+					<button>Create</button>
 				</form>
 			)}
+
+			{thumbnails &&
+				thumbnails.map((thumbnail) => {
+					return (
+						<div key={`${thumbnail.title}-${thumbnail._id}`}>
+							{thumbnail.title}
+						</div>
+					)
+				})}
 		</main>
 	)
 }

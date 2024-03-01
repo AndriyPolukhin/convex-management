@@ -1,5 +1,5 @@
 import { v } from 'convex/values'
-import { mutation } from './_generated/server'
+import { mutation, query } from './_generated/server'
 
 export const createThumbnail = mutation({
 	args: {
@@ -16,5 +16,21 @@ export const createThumbnail = mutation({
 			title: args.title,
 			userId: user.subject,
 		})
+	},
+})
+
+export const getThumbnailsForUser = query({
+	args: {},
+	handler: async (ctx, args) => {
+		const user = await ctx.auth.getUserIdentity()
+
+		if (!user) {
+			return []
+		}
+
+		return await ctx.db
+			.query('thumbnails')
+			.filter((q) => q.eq(q.field('userId'), user.subject))
+			.collect()
 	},
 })
