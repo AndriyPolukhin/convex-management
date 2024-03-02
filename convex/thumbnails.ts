@@ -23,6 +23,19 @@ export const createThumbnail = mutation({
 	},
 })
 
+export const getThumbnail = query({
+	args: { thumbnailId: v.id('thumbnails') },
+	handler: async (ctx, args) => {
+		const thumbnail = await ctx.db.get(args.thumbnailId)
+
+		if (!thumbnail) {
+			return null
+		}
+
+		return thumbnail
+	},
+})
+
 export const getThumbnailsForUser = query({
 	args: {},
 	handler: async (ctx, args) => {
