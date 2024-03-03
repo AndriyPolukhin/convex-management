@@ -9,13 +9,22 @@ export function Header() {
 			<div className='h-16 container flex  justify-between items-center'>
 				<div>Thumbnail Rater</div>
 
-				<div>
+				<div className='flex gap-8'>
 					<SignedIn>
-						<Link href='/create'>Create Test</Link>
+						<Link className='link' href='/dashboard'>
+							Dashboard
+						</Link>
+						<Link className='link' href='/create'>
+							Create
+						</Link>
 					</SignedIn>
 					<SignedOut>
-						<Link href='/pricing'>Pricing</Link>
-						<Link href='/about'>About</Link>
+						<Link className='link' href='/pricing'>
+							Pricing
+						</Link>
+						<Link className='link' href='/about'>
+							About
+						</Link>
 					</SignedOut>
 				</div>
 
