@@ -7,9 +7,7 @@ export function Header() {
 	return (
 		<div className='border-b'>
 			<div className='h-16 container flex  justify-between items-center'>
-				<div>
-					<Link href='/'>Thumbnail Rater</Link>
-				</div>
+				<Link href='/'>Thumbnail Rater</Link>
 
 				<div className='flex gap-8'>
 					<SignedIn>
@@ -18,6 +16,9 @@ export function Header() {
 						</Link>
 						<Link className='link' href='/create'>
 							Create
+						</Link>
+						<Link className='link' href='/explore'>
+							Explore
 						</Link>
 					</SignedIn>
 					<SignedOut>
