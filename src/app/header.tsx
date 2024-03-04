@@ -2,8 +2,10 @@
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ModeToggle } from './mode-toggle'
 import Link from 'next/link'
+import { UpgradeButton } from '@/components/upgrade-button'
 
 export function Header() {
+	function handleUpgradeClick() {}
 	return (
 		<div className='border-b'>
 			<div className='h-16 container flex  justify-between items-center'>
@@ -33,6 +35,7 @@ export function Header() {
 
 				<div className='flex gap-4 items-center'>
 					<SignedIn>
+						<UpgradeButton />
 						<UserButton />
 					</SignedIn>
 					<SignedOut>

@@ -32,10 +32,9 @@ export const pay = action({
 			metadata: {
 				userId: user.subject,
 			},
-			mode: 'payment',
+			mode: 'subscription',
 			success_url: `${domain}`,
 			cancel_url: `${domain}`,
-			automatic_tax: { enabled: true },
 		})
 
 		return session.url
