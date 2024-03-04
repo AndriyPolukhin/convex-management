@@ -17,6 +17,7 @@ import type {
 import type * as clerk from "../clerk.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as stripe from "../stripe.js";
 import type * as thumbnails from "../thumbnails.js";
 import type * as users from "../users.js";
 
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   files: typeof files;
   http: typeof http;
+  stripe: typeof stripe;
   thumbnails: typeof thumbnails;
   users: typeof users;
 }>;
