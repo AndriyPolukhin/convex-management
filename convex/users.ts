@@ -1,5 +1,10 @@
 import { v } from 'convex/values'
-import { internalMutation, query } from './_generated/server'
+import {
+	MutationCtx,
+	QueryCtx,
+	internalMutation,
+	query,
+} from './_generated/server'
 
 export const getUser = query({
 	args: {},
@@ -16,6 +21,21 @@ export const getUser = query({
 			.first()
 	},
 })
+
+export const isUserSubscribed = async (ctx: QueryCtx | MutationCtx) => {
+	const user = await ctx.auth.getUserIdentity()
+
+	if (!user) {
+		return false
+	}
+
+	const userToCheck = await ctx.db
+		.query('users')
+		.withIndex('by_userId', (q) => q.eq('userId', user.subject))
+		.first()
+
+	return (userToCheck?.endsOn ?? 0) > Date.now()
+}
 
 export const createUser = internalMutation({
 	args: { userId: v.string(), email: v.string() },
