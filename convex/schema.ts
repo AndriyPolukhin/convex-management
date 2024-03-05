@@ -17,5 +17,7 @@ export default defineSchema({
 		email: v.string(),
 		subscriptionId: v.optional(v.string()),
 		endsOn: v.optional(v.number()),
-	}).index('by_userId', ['userId']),
+	})
+		.index('by_userId', ['userId'])
+		.index('by_subscriptionId', ['subscriptionId']),
 })

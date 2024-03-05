@@ -79,7 +79,7 @@ export const fulfill = internalAction({
 					completedEvent.subscription as string
 				)
 
-				await ctx.runMutation(internal.users.updateSubscription, {
+				await ctx.runMutation(internal.users.updateSubscriptionBySubId, {
 					subscriptionId: subscription.id,
 					endsOn: subscription.current_period_end * 10000,
 				})
