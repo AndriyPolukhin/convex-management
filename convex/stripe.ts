@@ -56,15 +56,32 @@ export const fulfill = internalAction({
 				webhookSecret
 			)
 
+			const completedEvent = event.data.object as Stripe.Checkout.Session & {
+				metadata: Metadata
+			}
+
 			if (event.type === 'checkout.session.completed') {
-				const completedEvent = event.data.object as Stripe.Checkout.Session & {
-					metadata: Metadata
-				}
+				const subscription = await stripe.subscriptions.retrieve(
+					completedEvent.subscription as string
+				)
+
 				const userId = completedEvent.metadata.userId
 
-				await ctx.runMutation(internal.users.setStripeId, {
+				await ctx.runMutation(internal.users.updateSubscription, {
 					userId,
-					stripeId: completedEvent.id,
+					subscriptionId: subscription.id,
+					endsOn: subscription.current_period_end * 1000,
+				})
+			}
+
+			if (event.type === 'invoice.payment_succeeded') {
+				const subscription = await stripe.subscriptions.retrieve(
+					completedEvent.subscription as string
+				)
+
+				await ctx.runMutation(internal.users.updateSubscription, {
+					subscriptionId: subscription.id,
+					endsOn: subscription.current_period_end * 10000,
 				})
 			}
 			return { success: true }

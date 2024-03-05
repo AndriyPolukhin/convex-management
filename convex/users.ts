@@ -11,8 +11,8 @@ export const createUser = internalMutation({
 	},
 })
 
-export const setStripeId = internalMutation({
-	args: { stripeId: v.string(), userId: v.string() },
+export const updateSubscription = internalMutation({
+	args: { subscriptionId: v.string(), userId: v.string(), endsOn: v.number() },
 	handler: async (ctx, args) => {
 		const user = await ctx.db
 			.query('users')
@@ -24,7 +24,13 @@ export const setStripeId = internalMutation({
 		}
 
 		await ctx.db.patch(user._id, {
-			stripeId: args.stripeId,
+			subscriptionId: args.subscriptionId,
+			endsOn: args.endsOn,
 		})
 	},
+})
+
+export const updateSubscriptionBySubId = internalMutation({
+	args: { subscriptionId: v.string(), endsOn: v.number() },
+	handler: async (ctx, args) => {},
 })
