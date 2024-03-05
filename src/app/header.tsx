@@ -3,9 +3,15 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ModeToggle } from './mode-toggle'
 import Link from 'next/link'
 import { UpgradeButton } from '@/components/upgrade-button'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 
 export function Header() {
-	function handleUpgradeClick() {}
+	const user = useQuery(api.users.getUser)
+
+	const isSubscribed = user && (user.endsOn ?? 0) > Date.now()
+	console.log('isSubscribed', isSubscribed)
+
 	return (
 		<div className='border-b'>
 			<div className='h-16 container flex  justify-between items-center'>
@@ -35,7 +41,7 @@ export function Header() {
 
 				<div className='flex gap-4 items-center'>
 					<SignedIn>
-						<UpgradeButton />
+						{!isSubscribed && <UpgradeButton />}
 						<UserButton />
 					</SignedIn>
 					<SignedOut>
