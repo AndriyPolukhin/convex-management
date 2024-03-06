@@ -2,6 +2,7 @@ import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
 import { paginationOptsValidator } from 'convex/server'
 import { isUserSubscribed } from './users'
+import { getUser, getUserId } from './util'
 
 export const createThumbnail = mutation({
 	args: {
@@ -32,6 +33,39 @@ export const createThumbnail = mutation({
 			bVotes: 0,
 			voteIds: [],
 			profileImage: args.profileImage,
+			comments: [],
+		})
+	},
+})
+
+export const addComment = mutation({
+	args: { thumbnailId: v.id('thumbnails'), text: v.string() },
+	handler: async (ctx, args) => {
+		const user = await getUser(ctx)
+
+		if (!user) {
+			throw new Error('you must be logged in to leave a comment')
+		}
+		const thumbnail = await ctx.db.get(args.thumbnailId)
+
+		if (!thumbnail) {
+			throw new Error('thumbnail by id do not exist')
+		}
+
+		if (!thumbnail.comments) {
+			thumbnail.comments = []
+		}
+
+		thumbnail.comments.push({
+			createdAt: Date.now(),
+			text: args.text,
+			userId: user.subject,
+			name: user.name ?? 'Annonymous',
+			profileUrl: user.pictureUrl ?? '',
+		})
+
+		await ctx.db.patch(thumbnail._id, {
+			comments: thumbnail.comments,
 		})
 	},
 })
@@ -81,7 +115,7 @@ export const voteOnThumbnail = mutation({
 		imageId: v.string(),
 	},
 	handler: async (ctx, args) => {
-		const userId = (await ctx.auth.getUserIdentity())?.subject
+		const userId = await getUserId(ctx)
 
 		if (!userId) {
 			throw new Error('you must be logged in to vote')
