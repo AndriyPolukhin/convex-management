@@ -10,7 +10,6 @@ export function Header() {
 	const user = useQuery(api.users.getUser)
 
 	const isSubscribed = user && (user.endsOn ?? 0) > Date.now()
-	console.log('isSubscribed', isSubscribed)
 
 	return (
 		<div className='border-b'>

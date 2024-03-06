@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { useSession } from '@clerk/nextjs'
 import { useRef } from 'react'
+import { Comments } from './comments'
 
 export default function ThumbnailPage() {
 	const params = useParams<{ thumbnailId: Id<'thumbnails'> }>()
@@ -118,6 +119,7 @@ export default function ThumbnailPage() {
 					)}
 				</div>
 			</div>
+			<Comments thumbnail={thumbnail} />
 		</div>
 	)
 }
