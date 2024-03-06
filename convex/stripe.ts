@@ -4,6 +4,7 @@ import { v } from 'convex/values'
 import Stripe from 'stripe'
 import { action, internalAction } from './_generated/server'
 import { internal } from './_generated/api'
+import { getUser } from './util'
 
 type Metadata = {
 	userId: string
@@ -12,7 +13,7 @@ type Metadata = {
 export const pay = action({
 	args: {},
 	handler: async (ctx) => {
-		const user = await ctx.auth.getUserIdentity()
+		const user = await getUser(ctx)
 		if (!user) {
 			throw new Error('you must be logged in to subscribe')
 		}
