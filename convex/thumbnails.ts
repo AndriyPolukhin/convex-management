@@ -56,7 +56,7 @@ export const addComment = mutation({
 			thumbnail.comments = []
 		}
 
-		thumbnail.comments.push({
+		thumbnail.comments.unshift({
 			createdAt: Date.now(),
 			text: args.text,
 			userId: user.subject,

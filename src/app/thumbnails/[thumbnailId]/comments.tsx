@@ -19,6 +19,7 @@ import { api } from '../../../../convex/_generated/api'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Textarea } from '@/components/ui/textarea'
+import { formatDistance } from 'date-fns'
 
 const formSchema = z.object({
 	text: z.string().min(1).max(500),
@@ -43,7 +44,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
 			.then(() => {
 				toast({
 					title: 'Comment Added',
-					description: 'Thanks for leaving your feedbacK',
+					description: 'Thanks for leaving your feedback',
 					variant: 'default',
 				})
 				form.reset()
@@ -52,7 +53,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
 				toast({
 					title: 'Something happened',
 					description:
-						'We could not leave a commen, try again later. Thanks for leaving your feedback',
+						'We could not leave a comment, try again laterThanks for leaving your feedback',
 					variant: 'destructive',
 				})
 			})
@@ -62,7 +63,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
 		<div>
 			<h2 className='my-8 text-4xl font-bold text-center'>Comments</h2>
 
-			<div className='max-w-md mx-auto mb-24'>
+			<div className='max-w-lg mx-auto mb-24'>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
 						<FormField
@@ -85,23 +86,30 @@ export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
 						<Button type='submit'>Post Comment</Button>
 					</form>
 				</Form>
-			</div>
 
-			<div className='space-y-8 mt-12'>
-				{thumbnail.comments?.map((comment) => {
-					return (
-						<div key={`${comment.text}_${comment.createdAt}`}>
-							<div className='flex gap-4'>
-								<Avatar>
-									<AvatarImage src={comment.profileUrl} />
-									<AvatarFallback>CN</AvatarFallback>
-								</Avatar>
-								<div>{comment.name}</div>
-								<div>{comment.text}</div>
+				<div className='space-y-8 mt-12'>
+					{thumbnail.comments?.map((comment) => {
+						return (
+							<div key={`${comment.text}_${comment.createdAt}`}>
+								<div className='flex gap-4'>
+									<Avatar>
+										<AvatarImage src={comment.profileUrl} />
+										<AvatarFallback>CN</AvatarFallback>
+									</Avatar>
+									<div className='flex flex-col gap-2'>
+										<div>{comment.name}</div>
+										<div>
+											{formatDistance(new Date(comment.createdAt), new Date(), {
+												addSuffix: true,
+											})}
+										</div>
+										<div>{comment.text}</div>
+									</div>
+								</div>
 							</div>
-						</div>
-					)
-				})}
+						)
+					})}
+				</div>
 			</div>
 		</div>
 	)
