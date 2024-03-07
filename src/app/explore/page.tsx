@@ -42,19 +42,26 @@ export default function ExplorePage() {
 							/>
 						</CardHeader>
 						<CardContent>
-							<div className='flex gap-4 items-center'>
+							<div className='flex gap-4 items-center mb-2'>
 								<Avatar>
 									<AvatarImage src={thumbnail.profileImage} />
 									<AvatarFallback>CN</AvatarFallback>
 								</Avatar>
 
-								<p>{thumbnail.title}</p>
+								<div>
+									<p>{thumbnail.name}</p>
+									<p>
+										{formatDistance(
+											new Date(thumbnail._creationTime),
+											new Date(),
+											{
+												addSuffix: true,
+											}
+										)}
+									</p>
+								</div>
 							</div>
-							<p>
-								{formatDistance(new Date(thumbnail._creationTime), new Date(), {
-									addSuffix: true,
-								})}
-							</p>
+							<p>{thumbnail.title}</p>
 							<p>votes: {thumbnail.aVotes + thumbnail.bVotes}</p>
 						</CardContent>
 						<CardFooter>

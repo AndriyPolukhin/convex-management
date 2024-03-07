@@ -3,13 +3,10 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ModeToggle } from './mode-toggle'
 import Link from 'next/link'
 import { UpgradeButton } from '@/components/upgrade-button'
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { useIsSubscribed } from '@/hooks/useIsSubscribed'
 
 export function Header() {
-	const user = useQuery(api.users.getUser)
-
-	const isSubscribed = user && (user.endsOn ?? 0) > Date.now()
+	const isSubscribed = useIsSubscribed()
 
 	return (
 		<div className='border-b'>

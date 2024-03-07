@@ -1,7 +1,7 @@
 'use client'
 
 import * as z from 'zod'
-import { useMutation, useQuery } from 'convex/react'
+import { useMutation } from 'convex/react'
 import { Doc } from '../../../../convex/_generated/dataModel'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -20,12 +20,15 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Textarea } from '@/components/ui/textarea'
 import { formatDistance } from 'date-fns'
+import { useIsSubscribed } from '@/hooks/useIsSubscribed'
+import { UpgradeButton } from '@/components/upgrade-button'
 
 const formSchema = z.object({
 	text: z.string().min(1).max(500),
 })
 
 export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
+	const isSubscribed = useIsSubscribed()
 	const addComment = useMutation(api.thumbnails.addComment)
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -109,6 +112,15 @@ export function Comments({ thumbnail }: { thumbnail: Doc<'thumbnails'> }) {
 							</div>
 						)
 					})}
+
+					{!isSubscribed && (
+						<div className='border p-8 rounded text-center space-y-4'>
+							<div>
+								You must upgrade to view all the feedback users left for you
+							</div>
+							<UpgradeButton />
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
