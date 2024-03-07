@@ -7,6 +7,8 @@ import {
 } from './_generated/server'
 import { getUserId } from './util'
 
+const FREE_CREDITS = 5
+
 export const getUser = query({
 	args: {},
 	handler: async (ctx, args) => {
@@ -38,6 +40,7 @@ export const createUser = internalMutation({
 		await ctx.db.insert('users', {
 			userId: args.userId,
 			email: args.email,
+			credits: FREE_CREDITS,
 		})
 	},
 })

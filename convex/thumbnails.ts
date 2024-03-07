@@ -1,7 +1,7 @@
 import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
 import { paginationOptsValidator } from 'convex/server'
-import { isUserSubscribed } from './users'
+import { getFullUser, isUserSubscribed } from './users'
 import { getUser, getUserId } from './util'
 
 export const createThumbnail = mutation({
@@ -12,21 +12,30 @@ export const createThumbnail = mutation({
 		profileImage: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
-		const user = await ctx.auth.getUserIdentity()
-
-		if (!user) {
+		const userId = await getUserId(ctx)
+		if (!userId) {
 			throw new Error('you must be logged in to create a thumbnail')
 		}
 
-		const isSubscripbed = await isUserSubscribed(ctx)
+		const isSubscribed = await isUserSubscribed(ctx)
 
-		if (!isSubscripbed) {
+		const user = await getFullUser(ctx, userId)
+
+		if (!user) {
+			throw new Error('no user with that id is found')
+		}
+
+		if (!isSubscribed && user.credits <= 0) {
 			throw new Error('you must be subscribed to create a thumbnail')
 		}
 
+		await ctx.db.patch(user._id, {
+			credits: Math.max(0, user.credits - 1),
+		})
+
 		return await ctx.db.insert('thumbnails', {
+			userId,
 			title: args.title,
-			userId: user.subject,
 			aImage: args.aImage,
 			bImage: args.bImage,
 			aVotes: 0,
@@ -42,6 +51,7 @@ export const addComment = mutation({
 	args: { thumbnailId: v.id('thumbnails'), text: v.string() },
 	handler: async (ctx, args) => {
 		const user = await getUser(ctx)
+		console.log('user', user)
 
 		if (!user) {
 			throw new Error('you must be logged in to leave a comment')
@@ -74,12 +84,23 @@ export const getThumbnail = query({
 	args: { thumbnailId: v.id('thumbnails') },
 	handler: async (ctx, args) => {
 		const thumbnail = await ctx.db.get(args.thumbnailId)
-
 		if (!thumbnail) {
 			return null
 		}
 
-		return thumbnail
+		const isSubscribed = await isUserSubscribed(ctx)
+
+		let comments =
+			thumbnail.comments.length === 0 ? [] : [thumbnail.comments[0]]
+
+		if (isSubscribed) {
+			comments = thumbnail.comments
+		}
+
+		return {
+			...thumbnail,
+			comments,
+		}
 	},
 })
 
